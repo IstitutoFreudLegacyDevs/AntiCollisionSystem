@@ -1,0 +1,71 @@
+#include <LiquidCrystal.h> // Tale libreria abilita il funzionamento dello schermo
+
+LiquidCrystal lcd(1, 2, 4, 5, 6, 7);
+
+const int TrigPinSensore = 9;
+const int EchoPinSensore = 10;
+long durata;
+int distanzaCm, distanzaPRC;
+int buzzer = 8; //il digital pin utilizzato dal buzzer attivo
+
+void setup() {
+  lcd.begin(16, 2); // Inizializza l'interfaccia sullo schermo LCD e specifica le dimensioni (larghezza e altezza) del display
+  digitalWrite (buzzer,LOW);
+  pinMode(TrigPinSensore, OUTPUT);
+  pinMode (buzzer, OUTPUT);
+  pinMode(EchoPinSensore, INPUT);
+  inizio();
+  puliscitesto();
+}
+
+void loop() {
+  digitalWrite(TrigPinSensore, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TrigPinSensore, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TrigPinSensore, LOW);
+  durata = pulseIn(EchoPinSensore, HIGH);
+  distanzaCm = durata * 0.034 / 2;
+  distanzaPRC = durata * 0.0133 / 2;
+  lcd.setCursor(0, 0);
+  lcd.print("Distanza: ");
+  lcd.print(distanzaCm);
+  lcd.print(" cm");
+  lcd.setCursor(0, 1);
+  lcd.print("SOS | Attivo");
+  if (distanzaCm <= 30) {
+    digitalWrite(buzzer, HIGH);
+    delay(250);
+    digitalWrite(buzzer, LOW);
+    delay(100);
+    digitalWrite(buzzer, HIGH);
+    delay(250);
+    digitalWrite(buzzer, LOW);
+  }
+    delay(10);
+}
+
+void inizio(){
+  lcd.setCursor(0, 0);
+  lcd.print("Sistema");
+  lcd.setCursor(0, 1);
+  lcd.print("AntiCollisione");
+  delay(2500);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Attivato");
+  lcd.setCursor(0, 1);
+  lcd.print("By LD-Devs");
+  delay(2500);
+  lcd.clear();
+  delay(10);
+  lcd.clear();
+}
+
+void puliscitesto(){
+    lcd.clear();
+}
+
+// @TODO
+
+// PARTE CHE QUANDO SI ARRIVA PARI O SOTTO AL LIVELLO 3 PARTE UNO SCROLLTEXTLEFT
